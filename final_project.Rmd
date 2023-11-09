@@ -1,0 +1,107 @@
+Kaggle Spotify Countries dataset link: https://www.kaggle.com/datasets/asaniczka/top-spotify-songs-in-73-countries-daily-updated/universal_top_spotify_songs.csv
+
+ackground: There is data stored in an Excel file titled "imf_data.xls" in the same folder that I'm currently in, in VSCode. I need to extract this data into a dataframe
+
+```{r}
+# Load the readxl package
+library(readxl)
+
+# Read in the Excel file with the read_excel() function. The data desired is in the "Data" sheet. The first three rows are info for the user, so we skip them.
+#  Column names are in the fourth row, so we set the col_names argument to TRUE.
+
+imf_data <- read_excel("imf_data.xls", sheet = "Data", skip = 3, col_names = TRUE)
+
+# View the first 6 rows of the data
+head(imf_data)
+
+```
+
+We are aiming to join this GDP data into our Spotify data. We will need to do some data cleaning / preprocessing first.
+
+```{r}
+# The only columns we need are the `Country Code` and `2021` columns.
+filtered_imf_gdp_data <- imf_data[, c("Country Code", "2021")]
+
+# Next, we can rename the columns to be more descriptive (rename "2021" to "2021 GDP per capita")
+colnames(filtered_imf_gdp_data) <- c("Country Code", "2021 GDP per capita")
+
+# Display the first 6 rows of the filtered data
+head(filtered_imf_gdp_data)
+```
+
+Within the Excel workbook from the IMF, there is another sheet that contains metadata for each country. We can add this data to the filtered data to provide more context.
+
+```{r}
+# Read in the Excel file, this time from the sheet "Metadata - Countries"
+imf_metadata <- read_excel("imf_data.xls", sheet = "Metadata - Countries")
+
+# We want to merge the rows of the "Metadata - Countries" into the "filtered_imf_data" dataframe based on the "Country Code" column.
+# We can use the left_join() function from the dplyr package to do this.
+
+library(dplyr)
+
+merged_imf_data <- left_join(filtered_imf_gdp_data, imf_metadata, by = "Country Code")
+
+# Display the first 6 rows of the merged IMF data
+head(merged_imf_data)
+```
+
+Now that the data is gathered and filtered from the original IMF Excel workbook, it should be ready to be joined into the main Spotify data.
+
+The Spotify dataset has been download from Kaggle and added to this project, and is stored in the file "universal_top_spotify_songs.csv". We can read this data into a dataframe.
+
+```{r}
+# Read in the Spotify data
+spotify_data <- read.csv("universal_top_spotify_songs.csv")
+
+# Display the first 6 rows of the Spotify data
+head(spotify_data)
+```
+
+There is a discrepency between the two datasets: the IMF dataset uses Alpha-3 ISO codes for countries, while the Spotify dataset uses Alpha-2 ISO codes. We will need to convert the Alpha-3 codes and Alpha-2 codes to the actual country names, and then join the two datasets.
+
+```{r}
+
+# Install the countrycode package
+install.packages("countrycode")
+
+# Load the countrycode package
+library(countrycode)
+
+# Convert the Alpha-2 codes in the Spotify data `country` column to Alpha-3 codes to match the IMF data in a new dataframe copy of the Spotify data
+spotify_data_alpha3 <- spotify_data %>%
+  mutate(country = countrycode(country, "iso2c", "iso3c"))
+
+# Display the first 6 unique values in the `country` column of the Spotify data that aren't <NA>
+unique(spotify_data_alpha3$country, incomparables = FALSE)
+```
+
+Now that we've converted the country codes in the Spotify (when possible) to match the IMF data, we should be able to join the two datasets.
+
+First, it's probably a good idea to check that the country codes in the two datasets match up. We can do this by checking for any country codes that are in both datasets:
+```{r}
+
+# Show the country codes that overlap between spotify_data_alpha3's `country` column and merged_imf_data's `Country Code` column
+intersect(spotify_data_alpha3$country, merged_imf_data$`Country Code`)
+
+```
+
+Based on this output, we should be able to join the two datasets on the `Country Code` in  merged_imf_data and `country` in spotify_data_alpha3.
+
+```{r}
+# Code to join the two datasets on the `Country Code` and `country` columns, and store the result in a new dataframe called `joined_data`.
+joined_data <- left_join(spotify_data_alpha3, merged_imf_data, by = c("country" = "Country Code"))
+
+# Remove any data where the `country` column is <NA>
+cleaned_joined_data <- joined_data[!is.na(joined_data$country), ]
+
+# Show the first 6 rows of the joined data
+# head(cleaned_joined_data)
+
+# Display the first 6 rows of the joined data for `country`, `2021 GDP per capita` and `artists` columns to show that the join merged the data correctly
+head(cleaned_joined_data[, c("country", "2021 GDP per capita", "artists")])
+```
+
+
+
+
