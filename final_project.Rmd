@@ -102,6 +102,14 @@ cleaned_joined_data <- joined_data[!is.na(joined_data$country), ]
 head(cleaned_joined_data[, c("country", "2021 GDP per capita", "artists")])
 ```
 
+Now, all of the data is cleaned, and merged into one dataframe. We can now start to explore the data.
+
+```{r}
+
+# Data exploration stuff like histograms, scatterplots, finding the most popular song or artist in each country, etc.
+
+```
+
 
 
 
