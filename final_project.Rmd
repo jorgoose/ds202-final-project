@@ -63,7 +63,7 @@ There is a discrepency between the two datasets: the IMF dataset uses Alpha-3 IS
 ```{r}
 
 # Install the countrycode package
-install.packages("countrycode")
+install.packages("countrycode", repos="https://cran.r-project.org")
 
 # Load the countrycode package
 library(countrycode)
