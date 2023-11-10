@@ -154,7 +154,7 @@ ggplot(zaf_most_popular_song, aes(x = name)) +
   labs(x = "Song Name", y = "Number of Days as Most Popular Song", title = "Most Popular Song in ZAF by Day")
 ```
 
-# Number of Explicit vs. Non-Explicit Song Appearances by Country
+## Number of Explicit vs. Non-Explicit Song Appearances by Country
 
 ```{r, fig.width=20, fig.height=10}
 # Create a new dataframe that counts the number of explicit and non-explicit songs for each country (true or false in is_explicit column). Exlcude entries with country value of <NA>.
