@@ -128,9 +128,9 @@ head(cleaned_joined_data[, c("country", "2021 GDP per capita", "artists")])
 
 
 
-DATA CLEANING ENDS HERE
+<!-- End of Data Cleaning and Preprocessing -->
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-DATA ANALYSIS BEGINS HERE
+<!-- Beginning of Data Exploration and Analysis -->
 
 # Data Exploration and Analysis
 Now, all of the data is cleaned, and merged into one dataframe. We can now start to explore the data.
