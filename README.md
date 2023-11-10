@@ -373,13 +373,20 @@ ggplot(explicit_percent_by_country, aes(x = country, y = percent, fill = country
 We can also look at the average tempo of songs by country.
 
 ``` r
-# We can create a new dataframe that calculates the average tempo for each country
+# We can create a new dataframe that calculates the average tempo for each country with it's region value. Exlcude entries with country value of <NA>.
 tempo_by_country <- cleaned_joined_data %>%
-  group_by(country) %>%
+  filter(!is.na(country)) %>%
+  group_by(country, Region) %>%
   summarise(avg_tempo = mean(tempo))
+```
 
+    ## `summarise()` has grouped output by 'country'. You can override using the
+    ## `.groups` argument.
+
+``` r
 # Then, we create a visual that shows the average tempo for each country
-ggplot(tempo_by_country, aes(x = country, y = avg_tempo)) +
+# Color the bar for the country based on it's `Region` value using fill
+ggplot(tempo_by_country, aes(x = country, y = avg_tempo, fill = Region)) +
   geom_bar(stat = "identity", position = "dodge") +
   theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
   labs(x = "Country", y = "Average Tempo", title = "Average Tempo by Country")
