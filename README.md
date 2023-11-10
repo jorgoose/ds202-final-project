@@ -373,7 +373,7 @@ ggplot(explicit_percent_by_country, aes(x = country, y = percent, fill = country
 We can also look at the average tempo of songs by country.
 
 ``` r
-# We can create a new dataframe that calculates the average tempo for each country with it's region value. Exlcude entries with country value of <NA>.
+# We can create a new dataframe that calculates the average tempo for each country with it's region value. Excluding entries with country value of <NA>.
 tempo_by_country <- cleaned_joined_data %>%
   filter(!is.na(country)) %>%
   group_by(country, Region) %>%
@@ -393,5 +393,26 @@ ggplot(tempo_by_country, aes(x = country, y = avg_tempo, fill = Region)) +
 ```
 
 ![](README_files/figure-gfm/unnamed-chunk-12-1.png)<!-- -->
+
+## Tempo by Region
+
+We can also look at the average tempo of songs by region overall,
+instead of breaking it down by country.
+
+``` r
+# We can create a new dataframe that calculates the average tempo for each region. Exlcuding entries with country value of <NA>.
+tempo_by_region <- cleaned_joined_data %>%
+  filter(!is.na(country)) %>%
+  group_by(Region) %>%
+  summarise(avg_tempo = mean(tempo))
+
+# Then, we create a visual that shows the average tempo for each region, colored by region
+ggplot(tempo_by_region, aes(x = Region, y = avg_tempo, fill = Region)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+  labs(x = "Region", y = "Average Tempo", title = "Average Tempo by Region")
+```
+
+![](README_files/figure-gfm/unnamed-chunk-13-1.png)<!-- -->
 
 …and so on and so forth.
