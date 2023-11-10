@@ -140,9 +140,9 @@ head(merged_imf_data)
 Now that the data is gathered and filtered from the original IMF Excel
 workbook, it should be ready to be joined into the main Spotify data.
 
-The Spotify dataset has been download from Kaggle and added to this
+The Spotify dataset has been downloaded from Kaggle and added to this
 project, and is stored in the file “universal\_top\_spotify\_songs.csv”.
-We can read this data into a dataframe.
+We can read this data into a dataframe using the read.csv() function.
 
 ``` r
 # Read in the Spotify data
