@@ -377,7 +377,7 @@ ggplot(explicit_percent_by_country, aes(x = country, y = percent, fill = country
   geom_bar(stat = "identity", position = "dodge") +
   theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
   labs(x = "Country", y = "Percentage of Songs that are Explicit", title = "Percentage of Explicit Songs by Country") +
-  scale_fill_manual(values = c("USA" = "red", "Other" = "blue"))
+  scale_fill_manual(values = c("USA" = "darkred"))
 ```
 
 ![](README_files/figure-gfm/unnamed-chunk-11-1.png)<!-- -->
