@@ -1,6 +1,16 @@
-Kaggle Spotify Countries dataset link: https://www.kaggle.com/datasets/asaniczka/top-spotify-songs-in-73-countries-daily-updated/universal_top_spotify_songs.csv
+# Data Sources:
+- Spotify Data: Kaggle Spotify Countries dataset link: https://www.kaggle.com/datasets/asaniczka/top-spotify-songs-in-73-countries-daily-updated/universal_top_spotify_songs.csv
+- GDP Data: IMF Website
 
-Background Information: There is data stored in an Excel file titled "imf_data.xls" in the same folder that I'm currently in, in VSCode. I need to extract this data into a dataframe
+# DS 202 Final Project - Spotify Data by Country Analysis Using R
+The goal of this project is to analyze the Spotify data by country, and see if there are any interesting trends or correlations between the data and other data sources. 
+
+For example, we could see if there is a correlation between a country's GDP and the popularity of a certain genre of music in that country.
+
+---
+
+## Importing the IMF GDP-by-Country Data
+There is data stored in an Excel workbook file titled "imf_data.xls". Below, we will extract the data from the "Data" sheet of the workbook, and store it in a dataframe.
 
 ```{r}
 
@@ -20,6 +30,7 @@ head(imf_data)
 
 ```
 
+## Filtering the IMF GDP-by-Country Data from the Excel Workbook
 We are aiming to join this GDP data into our Spotify data. We will need to do some data cleaning / preprocessing first.
 
 ```{r}
@@ -33,7 +44,8 @@ colnames(filtered_imf_gdp_data) <- c("Country Code", "2021 GDP per capita")
 head(filtered_imf_gdp_data)
 ```
 
-Within the Excel workbook from the IMF, there is another sheet that contains metadata for each country. We can add this data to the filtered data to provide more context.
+## Combining Extra Metadeta from the IMF Excel Workbook
+Within the Excel workbook from the IMF, there is another sheet titled "Metadata - Countries" that contains metadata for each country. We can add this data to the filtered data to provide more context.
 
 ```{r}
 # Read in the Excel file, this time from the sheet "Metadata - Countries"
@@ -50,6 +62,8 @@ merged_imf_data <- left_join(filtered_imf_gdp_data, imf_metadata, by = "Country 
 head(merged_imf_data)
 ```
 
+
+## Pulling in the Spotify Data
 Now that the data is gathered and filtered from the original IMF Excel workbook, it should be ready to be joined into the main Spotify data.
 
 The Spotify dataset has been download from Kaggle and added to this project, and is stored in the file "universal_top_spotify_songs.csv". We can read this data into a dataframe.
@@ -62,6 +76,8 @@ spotify_data <- read.csv("universal_top_spotify_songs.csv")
 head(spotify_data)
 ```
 
+
+## Dealing With Inconsistent Country Code Data
 There is a discrepency between the two datasets: the IMF dataset uses Alpha-3 ISO codes for countries, while the Spotify dataset uses Alpha-2 ISO codes. We will need to convert the Alpha-3 codes and Alpha-2 codes to the actual country names, and then join the two datasets.
 
 ```{r}
@@ -80,8 +96,12 @@ spotify_data_alpha3 <- spotify_data %>%
 unique(spotify_data_alpha3$country, incomparables = FALSE)
 ```
 
+
+## Joining the IMF and Spotify Data
 Now that we've converted the country codes in the Spotify (when possible) to match the IMF data, we should be able to join the two datasets.
 
+
+### Checking for Overlapping Country Codes
 First, it's probably a good idea to check that the country codes in the two datasets match up. We can do this by checking for any country codes that are in both datasets:
 ```{r}
 
@@ -90,6 +110,7 @@ intersect(spotify_data_alpha3$country, merged_imf_data$`Country Code`)
 
 ```
 
+### Joining the Two Datasets on the Country Code
 Based on this output, we should be able to join the two datasets on the `Country Code` in  merged_imf_data and `country` in spotify_data_alpha3.
 
 ```{r}
@@ -106,17 +127,15 @@ cleaned_joined_data <- joined_data[!is.na(joined_data$country), ]
 head(cleaned_joined_data[, c("country", "2021 GDP per capita", "artists")])
 ```
 
-Now, all of the data is cleaned, and merged into one dataframe. We can now start to explore the data.
 
-```{r}
 
-# Data exploration stuff like histograms, scatterplots, finding the most popular song or artist in each country, etc.
-
-```
 
 DATA CLEANING ENDS HERE
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 DATA ANALYSIS BEGINS HERE
+
+# Data Exploration and Analysis
+Now, all of the data is cleaned, and merged into one dataframe. We can now start to explore the data.
 
 EXAMPLE of analyzing data: Most popular song in ZAF by day
   
