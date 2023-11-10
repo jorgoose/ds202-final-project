@@ -2,7 +2,8 @@
 - Spotify Data: Kaggle Spotify Countries dataset link: https://www.kaggle.com/datasets/asaniczka/top-spotify-songs-in-73-countries-daily-updated/universal_top_spotify_songs.csv
 - GDP Data: IMF Website
 
-# DS 202 Final Project - Spotify Data by Country Analysis Using R
+# DS 202 Final Project
+## Spotify Data by Country Analysis Using R
 The goal of this project is to analyze the Spotify data by country, and see if there are any interesting trends or correlations between the data and other data sources. 
 
 For example, we could see if there is a correlation between a country's GDP and the popularity of a certain genre of music in that country.
