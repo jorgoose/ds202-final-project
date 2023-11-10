@@ -9,7 +9,7 @@ For example, we could see if there is a correlation between a country's GDP and 
 
 ---
 
-```{r}
+```{r, results='hide', message=FALSE, warning=FALSE}
 library(ggplot2) # Used for data visualization
 library(readxl) # Used for reading in Excel files
 library(dplyr) # Used for data manipulation
