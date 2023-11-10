@@ -49,10 +49,16 @@ jobs:
       - name: Knit README.Rmd to README.md
         run: Rscript -e "rmarkdown::render('README.Rmd', output_format = 'github_document', output_file = 'README.md')"
 
-      - name: Commit and Push README.md
+      - name: Knit README.Rmd to README.md
+        run: Rscript -e "rmarkdown::render('README.Rmd', output_format = 'github_document')"
+
+      - name: Configure Git
         run: |
-          git config --global user.name 'Logan Jorgensen'
-          git config --global user.email 'contact.jorgensen@gmail.com'
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Commit README.md
+        run: |
           git add README.md
-          git commit -m "Update README.md"
+          git commit -m "Update README.md" || echo "No changes to commit"
           git push
