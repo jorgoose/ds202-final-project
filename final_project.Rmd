@@ -182,9 +182,6 @@ explicit_percent_by_country <- explicit_vs_non_explicit %>%
   group_by(country) %>%
   mutate(percent = count / sum(count) * 100)
 
-# Display the first 6 rows of the data
-head(explicit_percent_by_country)
-
 # Create a visual that shows the percentage column value, where the y axis is the percentage of songs that are explicit for each country and the x axis is the country.
 # The column that has the country value of "USA" should have it's bar colored red.
 
