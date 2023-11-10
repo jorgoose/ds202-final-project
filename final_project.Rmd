@@ -1,5 +1,3 @@
-The stuff above makes it so knitting both creates an HTML file AND updates the README.md which can then be pushed to GitHub :)
-
 Kaggle Spotify Countries dataset link: https://www.kaggle.com/datasets/asaniczka/top-spotify-songs-in-73-countries-daily-updated/universal_top_spotify_songs.csv
 
 Background: There is data stored in an Excel file titled "imf_data.xls" in the same folder that I'm currently in, in VSCode. I need to extract this data into a dataframe
