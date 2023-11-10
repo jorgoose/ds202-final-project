@@ -16,6 +16,37 @@ GDP and the popularity of a certain genre of music in that country.
 
 -----
 
+``` r
+library(ggplot2) # Used for data visualization
+library(readxl) # Used for reading in Excel files
+library(dplyr) # Used for data manipulation
+```
+
+    ## 
+    ## Attaching package: 'dplyr'
+
+    ## The following objects are masked from 'package:stats':
+    ## 
+    ##     filter, lag
+
+    ## The following objects are masked from 'package:base':
+    ## 
+    ##     intersect, setdiff, setequal, union
+
+``` r
+# Install and load the countrycode package, which will be used to convert between country codes (why this is needed is explained later in the project)
+install.packages("countrycode", repos="https://cran.r-project.org")
+```
+
+    ## Installing package into '/home/runner/work/_temp/Library'
+    ## (as 'lib' is unspecified)
+
+``` r
+library(countrycode)
+```
+
+-----
+
 ## Importing the IMF GDP-by-Country Data
 
 There is data stored in an Excel workbook file titled “imf\_data.xls”.
@@ -23,12 +54,6 @@ Below, we will extract the data from the “Data” sheet of the workbook,
 and store it in a dataframe.
 
 ``` r
-# Load ggplot2 package
-library(ggplot2)
-
-# Load the readxl package
-library(readxl)
-
 # Read in the Excel file with the read_excel() function. The data desired is in the "Data" sheet. The first three rows are info for the user, so we skip them.
 #  Column names are in the fourth row, so we set the col_names argument to TRUE.
 
@@ -94,21 +119,6 @@ imf_metadata <- read_excel("imf_data.xls", sheet = "Metadata - Countries")
 # We want to merge the rows of the "Metadata - Countries" into the "filtered_imf_data" dataframe based on the "Country Code" column.
 # We can use the left_join() function from the dplyr package to do this.
 
-library(dplyr)
-```
-
-    ## 
-    ## Attaching package: 'dplyr'
-
-    ## The following objects are masked from 'package:stats':
-    ## 
-    ##     filter, lag
-
-    ## The following objects are masked from 'package:base':
-    ## 
-    ##     intersect, setdiff, setequal, union
-
-``` r
 merged_imf_data <- left_join(filtered_imf_gdp_data, imf_metadata, by = "Country Code")
 
 # Display the first 6 rows of the merged IMF data
@@ -193,17 +203,6 @@ ISO codes. We will need to convert the Alpha-3 codes and Alpha-2 codes
 to the actual country names, and then join the two datasets.
 
 ``` r
-# Install the countrycode package
-install.packages("countrycode", repos="https://cran.r-project.org")
-```
-
-    ## Installing package into '/home/runner/work/_temp/Library'
-    ## (as 'lib' is unspecified)
-
-``` r
-# Load the countrycode package
-library(countrycode)
-
 # Convert the Alpha-2 codes in the Spotify data `country` column to Alpha-3 codes to match the IMF data in a new dataframe copy of the Spotify data
 spotify_data_alpha3 <- spotify_data %>%
   mutate(country = countrycode(country, "iso2c", "iso3c"))
@@ -323,6 +322,6 @@ ggplot(zaf_most_popular_song, aes(x = name)) +
   labs(x = "Song Name", y = "Number of Days as Most Popular Song", title = "Most Popular Song in ZAF by Day")
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-9-1.png)<!-- -->
 
 …and so on and so forth.
