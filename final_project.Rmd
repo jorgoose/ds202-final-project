@@ -153,4 +153,51 @@ ggplot(zaf_most_popular_song, aes(x = name)) +
   labs(x = "Song Name", y = "Number of Days as Most Popular Song", title = "Most Popular Song in ZAF by Day")
 ```
 
+# Number of Explicit vs. Non-Explicit Song Appearances by Country
+
+```{r, fig.width=20, fig.height=10}
+# Create a new dataframe that counts the number of explicit and non-explicit songs for each country (true or false in is_explicit column). Exlcude entries with country value of <NA>.
+explicit_vs_non_explicit <- cleaned_joined_data %>%
+  filter(!is.na(country)) %>%
+  group_by(country, is_explicit) %>%
+  summarise(count = n())
+
+# Display the first 6 rows of the data
+head(explicit_vs_non_explicit)
+
+# Create a visual that shows the number of explicit and non-explicit songs for each country
+ggplot(explicit_vs_non_explicit, aes(x = country, y = count, fill = is_explicit)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+  labs(x = "Country", y = "Number of Songs", title = "Number of Explicit vs. Non-Explicit Songs by Country")
+
+```
+
+This visual is a bit hard to look at, so instead we can create a visual that shows the percentage of explicit songs as a percentage of all songs for each country.
+
+```{r, fig.width=20, fig.height=10}
+# We can add a new column that represents the percentage of songs that are explicit for each country
+explicit_percent_by_country <- explicit_vs_non_explicit %>%
+  group_by(country) %>%
+  mutate(percent = count / sum(count) * 100)
+
+# Display the first 6 rows of the data
+head(explicit_percent_by_country)
+
+# Create a visual that shows the percentage column value, where the y axis is the percentage of songs that are explicit for each country and the x axis is the country
+ggplot(explicit_percent_by_country, aes(x = country, y = percent)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+  labs(x = "Country", y = "Percentage of Songs that are Explicit", title = "Percentage of Explicit Songs by Country")
+
+```
+
+
+```
+
+```
+
+
+```
+
 ...and so on and so forth.
