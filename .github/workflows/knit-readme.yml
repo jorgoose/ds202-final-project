@@ -3,7 +3,7 @@ name: Knit RMD to MD
 on:
   push:
     paths:
-      - 'final_project.rmd'
+      - 'final_project.Rmd'
 
 jobs:
   knit:
