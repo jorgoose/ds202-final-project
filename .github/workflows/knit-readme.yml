@@ -51,8 +51,9 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-      - name: Commit README.md
+      - name: Commit README.md and any graphics generated for the file
         run: |
           git add README.md
+          git add README_files/*
           git commit -m "Update README.md" || echo "No changes to commit"
           git push
