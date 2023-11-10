@@ -1,0 +1,151 @@
+# DS 202 Final Project Proposal
+## Analysis of Spotify Data by Country Using R
+
+### Project Overview
+The objective of this project is to explore and analyze Spotify data across different countries, focusing on identifying trends or correlations between music preferences and other socio-economic factors such as a country's Gross Domestic Product (GDP). This analysis aims to uncover insights into how economic conditions may influence musical tastes and preferences.
+
+### Data Sources
+1. **Spotify Data**: The dataset is obtained from Kaggle, titled "Top Spotify Songs in 73 Countries - Daily Updated". This dataset includes daily rankings of songs across various countries.
+   - Source: [Kaggle Spotify Countries Dataset](https://www.kaggle.com/datasets/asaniczka/top-spotify-songs-in-73-countries-daily-updated/universal_top_spotify_songs.csv)
+2. **GDP Data**: The International Monetary Fund (IMF) provides GDP data for various countries, available on their website. This data will be used to analyze correlations with Spotify's music data.
+
+### Initial Data Cleaning
+
+#### Importing and Cleaning the IMF GDP Data
+
+```{r}
+library(readxl)
+imf_data <- read_excel("imf_data.xls", sheet = "Data", skip = 3, col_names = TRUE)
+filtered_imf_gdp_data <- imf_data[, c("Country Code", "2021")]
+colnames(filtered_imf_gdp_data) <- c("Country Code", "2021 GDP per capita")
+head(filtered_imf_gdp_data)
+```
+
+#### Importing and Preprocessing the Spotify Data
+
+```{r}
+spotify_data <- read.csv("universal_top_spotify_songs.csv")
+head(spotify_data)
+```
+
+
+#### Dealing With Inconsistent Country Code Data
+There is a discrepency between the two datasets: the IMF dataset uses Alpha-3 ISO codes for countries, while the Spotify dataset uses Alpha-2 ISO codes. We will need to convert the Alpha-3 codes and Alpha-2 codes to the actual country names, and then join the two datasets.
+
+```{r}
+
+# Convert the Alpha-2 codes in the Spotify data `country` column to Alpha-3 codes to match the IMF data in a new dataframe copy of the Spotify data
+spotify_data_alpha3 <- spotify_data %>%
+  mutate(country = countrycode(country, "iso2c", "iso3c"))
+
+# Display the first 6 unique values in the `country` column of the Spotify data that aren't <NA>
+unique(spotify_data_alpha3$country, incomparables = FALSE)
+```
+
+
+#### Joining the IMF and Spotify Data
+Now that we've converted the country codes in the Spotify (when possible) to match the IMF data, we should be able to join the two datasets.
+
+
+##### Checking for Overlapping Country Codes
+First, it's probably a good idea to check that the country codes in the two datasets match up. We can do this by checking for any country codes that are in both datasets:
+```{r}
+
+# Show the country codes that overlap between spotify_data_alpha3's `country` column and merged_imf_data's `Country Code` column
+intersect(spotify_data_alpha3$country, merged_imf_data$`Country Code`)
+
+```
+
+##### Joining the Two Datasets on the Country Code
+Based on this output, we should be able to join the two datasets on the `Country Code` in  merged_imf_data and `country` in spotify_data_alpha3.
+
+```{r}
+# Code to join the two datasets on the `Country Code` and `country` columns, and store the result in a new dataframe called `joined_data`.
+joined_data <- left_join(spotify_data_alpha3, merged_imf_data, by = c("country" = "Country Code"))
+
+# Remove any data where the `country` column is <NA>
+cleaned_joined_data <- joined_data[!is.na(joined_data$country), ]
+
+# Show the first 6 rows of the joined data
+# head(cleaned_joined_data)
+
+# Display the first 6 rows of the joined data for `country`, `2021 GDP per capita` and `artists` columns to show that the join merged the data correctly
+head(cleaned_joined_data[, c("country", "2021 GDP per capita", "artists")])
+```
+
+### Marginal Summaries
+
+#### Summary of the Spotify Data
+## Number of Explicit vs. Non-Explicit Song Appearances by Country
+
+```{r, fig.width=20, fig.height=10}
+# We can create a new dataframe that counts the number of explicit and non-explicit songs for each country (true or false in is_explicit column). Exlcude entries with country value of <NA>.
+explicit_vs_non_explicit <- cleaned_joined_data %>%
+  filter(!is.na(country)) %>%
+  group_by(country, is_explicit) %>%
+  summarise(count = n())
+
+# Display the first 6 rows of the data
+head(explicit_vs_non_explicit)
+
+# Then, we create a visual that shows the number of explicit and non-explicit songs for each country
+ggplot(explicit_vs_non_explicit, aes(x = country, y = count, fill = is_explicit)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+  labs(x = "Country", y = "Number of Songs", title = "Number of Explicit vs. Non-Explicit Songs by Country")
+
+```
+
+This visual is a bit hard to look at, so instead we can create a visual that shows the percentage of explicit songs as a percentage of all songs for each country.
+
+```{r, fig.width=20, fig.height=10}
+# We can add a new column that represents the percentage of songs that are explicit for each country
+explicit_percent_by_country <- explicit_vs_non_explicit %>%
+  group_by(country) %>%
+  mutate(percent = count / sum(count) * 100)
+
+# Then, we create a visual that shows the percentage column value, where the y axis is the percentage of songs that are explicit for each country and the x axis is the country.
+# The column that has the country value of "USA" should have it's bar colored red.
+
+ggplot(explicit_percent_by_country, aes(x = country, y = percent, fill = country)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+  labs(x = "Country", y = "Percentage of Songs that are Explicit", title = "Percentage of Explicit Songs by Country") +
+  scale_fill_manual(values = c("USA" = "darkred"))
+```
+
+## Tempo by Country
+We can also look at the average tempo of songs by country.
+
+```{r, fig.width=20, fig.height=10}
+# We can create a new dataframe that calculates the average tempo for each country with it's region value. Excluding entries with country value of <NA>.
+tempo_by_country <- cleaned_joined_data %>%
+  filter(!is.na(country)) %>%
+  group_by(country, Region) %>%
+  summarise(avg_tempo = mean(tempo))
+
+# Then, we create a visual that shows the average tempo for each country
+# Color the bar for the country based on it's `Region` value using fill
+ggplot(tempo_by_country, aes(x = country, y = avg_tempo, fill = Region)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+  labs(x = "Country", y = "Average Tempo", title = "Average Tempo by Country")
+```
+
+## Tempo by Region
+We can also look at the average tempo of songs by region overall, instead of breaking it down by country.
+
+```{r, fig.width=20, fig.height=10}
+# We can create a new dataframe that calculates the average tempo for each region. Exlcuding entries with country value of <NA>.
+tempo_by_region <- cleaned_joined_data %>%
+  filter(!is.na(country)) %>%
+  group_by(Region) %>%
+  summarise(avg_tempo = mean(tempo))
+
+# Then, we create a visual that shows the average tempo for each region, colored by region
+ggplot(tempo_by_region, aes(x = Region, y = avg_tempo, fill = Region)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+  labs(x = "Region", y = "Average Tempo", title = "Average Tempo by Region")
+```
+
