@@ -44,9 +44,6 @@ jobs:
         run: cp final_project.Rmd README.Rmd
 
       - name: Knit README.Rmd to README.md
-        run: Rscript -e "rmarkdown::render('README.Rmd', output_format='github_document')"
-
-      - name: Knit README.Rmd to README.md
         run: Rscript -e "rmarkdown::render('README.Rmd', output_format = 'github_document', output_file = 'README.md')"
 
       - name: Configure Git
