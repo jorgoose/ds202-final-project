@@ -38,4 +38,4 @@ jobs:
         run: cp final_project.Rmd README.Rmd
 
       - name: Knit README.Rmd to README.md
-        run: Rscript -e "rmarkdown::render('README.rmd')"
+        run: Rscript -e "rmarkdown::render('README.Rmd')"
