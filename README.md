@@ -371,17 +371,14 @@ head(explicit_percent_by_country)
 
 ``` r
 # Create a visual that shows the percentage column value, where the y axis is the percentage of songs that are explicit for each country and the x axis is the country
-ggplot(explicit_percent_by_country, aes(x = country, y = percent)) +
+# Highlight the USA in red
+ggplot(explicit_percent_by_country, aes(x = country, y = percent, fill = country)) +
   geom_bar(stat = "identity", position = "dodge") +
   theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
-  labs(x = "Country", y = "Percentage of Songs that are Explicit", title = "Percentage of Explicit Songs by Country")
+  labs(x = "Country", y = "Percentage of Songs that are Explicit", title = "Percentage of Explicit Songs by Country") +
+  scale_fill_manual(values = c(rep("grey", 72), "red"))
 ```
 
 ![](README_files/figure-gfm/unnamed-chunk-11-1.png)<!-- -->
-
-``` 
-```
-
-\`\`\`
 
 …and so on and so forth.
