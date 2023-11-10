@@ -1,10 +1,26 @@
 
-Kaggle Spotify Countries dataset link:
-<https://www.kaggle.com/datasets/asaniczka/top-spotify-songs-in-73-countries-daily-updated/universal_top_spotify_songs.csv>
+# Data Sources:
 
-Background Information: There is data stored in an Excel file titled
-“imf\_data.xls” in the same folder that I’m currently in, in VSCode. I
-need to extract this data into a dataframe
+  - Spotify Data: Kaggle Spotify Countries dataset link:
+    <https://www.kaggle.com/datasets/asaniczka/top-spotify-songs-in-73-countries-daily-updated/universal_top_spotify_songs.csv>
+  - GDP Data: IMF Website
+
+# DS 202 Final Project - Spotify Data by Country Analysis Using R
+
+The goal of this project is to analyze the Spotify data by country, and
+see if there are any interesting trends or correlations between the data
+and other data sources.
+
+For example, we could see if there is a correlation between a country’s
+GDP and the popularity of a certain genre of music in that country.
+
+-----
+
+## Importing the IMF GDP-by-Country Data
+
+There is data stored in an Excel workbook file titled “imf\_data.xls”.
+Below, we will extract the data from the “Data” sheet of the workbook,
+and store it in a dataframe.
 
 ``` r
 # Load ggplot2 package
@@ -39,6 +55,8 @@ head(imf_data)
     ## #   `1986` <dbl>, `1987` <dbl>, `1988` <dbl>, `1989` <dbl>, `1990` <dbl>,
     ## #   `1991` <dbl>, `1992` <dbl>, `1993` <dbl>, `1994` <dbl>, `1995` <dbl>, …
 
+## Filtering the IMF GDP-by-Country Data from the Excel Workbook
+
 We are aiming to join this GDP data into our Spotify data. We will need
 to do some data cleaning / preprocessing first.
 
@@ -63,9 +81,11 @@ head(filtered_imf_gdp_data)
     ## 5 AGO                            1904.
     ## 6 ALB                            6377.
 
-Within the Excel workbook from the IMF, there is another sheet that
-contains metadata for each country. We can add this data to the filtered
-data to provide more context.
+## Combining Extra Metadeta from the IMF Excel Workbook
+
+Within the Excel workbook from the IMF, there is another sheet titled
+“Metadata - Countries” that contains metadata for each country. We can
+add this data to the filtered data to provide more context.
 
 ``` r
 # Read in the Excel file, this time from the sheet "Metadata - Countries"
@@ -104,6 +124,8 @@ head(merged_imf_data)
     ## 4 AFW                            1766. <NA>   <NA>        "22 countri… Africa W…
     ## 5 AGO                            1904. Sub-S… Lower midd… "The World … Angola   
     ## 6 ALB                            6377. Europ… Upper midd…  <NA>        Albania
+
+## Pulling in the Spotify Data
 
 Now that the data is gathered and filtered from the original IMF Excel
 workbook, it should be ready to be joined into the main Spotify data.
@@ -163,6 +185,8 @@ head(spotify_data)
     ## 5 100.012              4
     ## 6  96.057              4
 
+## Dealing With Inconsistent Country Code Data
+
 There is a discrepency between the two datasets: the IMF dataset uses
 Alpha-3 ISO codes for countries, while the Spotify dataset uses Alpha-2
 ISO codes. We will need to convert the Alpha-3 codes and Alpha-2 codes
@@ -203,9 +227,13 @@ unique(spotify_data_alpha3$country, incomparables = FALSE)
     ## [61] "COL" "CHL" "CHE" "CAN" "BLR" "BRA" "BOL" "BGR" "BEL" "AUS" "AUT" "ARG"
     ## [73] "ARE"
 
+## Joining the IMF and Spotify Data
+
 Now that we’ve converted the country codes in the Spotify (when
 possible) to match the IMF data, we should be able to join the two
 datasets.
+
+### Checking for Overlapping Country Codes
 
 First, it’s probably a good idea to check that the country codes in the
 two datasets match up. We can do this by checking for any country codes
@@ -222,6 +250,8 @@ intersect(spotify_data_alpha3$country, merged_imf_data$`Country Code`)
     ## [37] "ISL" "IND" "ISR" "IRL" "IDN" "HUN" "HND" "HKG" "GTM" "GRC" "GBR" "FRA"
     ## [49] "FIN" "ESP" "EGY" "EST" "ECU" "DOM" "DNK" "DEU" "CZE" "CRI" "COL" "CHL"
     ## [61] "CHE" "CAN" "BLR" "BRA" "BOL" "BGR" "BEL" "AUS" "AUT" "ARG" "ARE"
+
+### Joining the Two Datasets on the Country Code
 
 Based on this output, we should be able to join the two datasets on the
 `Country Code` in merged\_imf\_data and `country` in
@@ -256,16 +286,14 @@ head(cleaned_joined_data[, c("country", "2021 GDP per capita", "artists")])
     ## 55                                 Kamo Mphela, Tyler ICU, Khalil Harrison, Baby S.O.N
     ## 56                                                                                Tyla
 
-Now, all of the data is cleaned, and merged into one dataframe. We can
-now start to explore the data.
-
-``` r
-# Data exploration stuff like histograms, scatterplots, finding the most popular song or artist in each country, etc.
-```
-
 ## DATA CLEANING ENDS HERE
 
 DATA ANALYSIS BEGINS HERE
+
+# Data Exploration and Analysis
+
+Now, all of the data is cleaned, and merged into one dataframe. We can
+now start to explore the data.
 
 EXAMPLE of analyzing data: Most popular song in ZAF by day
 
@@ -295,6 +323,6 @@ ggplot(zaf_most_popular_song, aes(x = name)) +
   labs(x = "Song Name", y = "Number of Days as Most Popular Song", title = "Most Popular Song in ZAF by Day")
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-9-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
 
 …and so on and so forth.
