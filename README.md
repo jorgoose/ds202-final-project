@@ -310,7 +310,7 @@ ggplot(zaf_most_popular_song, aes(x = name)) +
 ## Number of Explicit vs. Non-Explicit Song Appearances by Country
 
 ``` r
-# Create a new dataframe that counts the number of explicit and non-explicit songs for each country (true or false in is_explicit column). Exlcude entries with country value of <NA>.
+# We can create a new dataframe that counts the number of explicit and non-explicit songs for each country (true or false in is_explicit column). Exlcude entries with country value of <NA>.
 explicit_vs_non_explicit <- cleaned_joined_data %>%
   filter(!is.na(country)) %>%
   group_by(country, is_explicit) %>%
@@ -337,7 +337,7 @@ head(explicit_vs_non_explicit)
     ## 6 AUS     True          403
 
 ``` r
-# Create a visual that shows the number of explicit and non-explicit songs for each country
+# Then, we create a visual that shows the number of explicit and non-explicit songs for each country
 ggplot(explicit_vs_non_explicit, aes(x = country, y = count, fill = is_explicit)) +
   geom_bar(stat = "identity", position = "dodge") +
   theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
@@ -356,7 +356,7 @@ explicit_percent_by_country <- explicit_vs_non_explicit %>%
   group_by(country) %>%
   mutate(percent = count / sum(count) * 100)
 
-# Create a visual that shows the percentage column value, where the y axis is the percentage of songs that are explicit for each country and the x axis is the country.
+# Then, we create a visual that shows the percentage column value, where the y axis is the percentage of songs that are explicit for each country and the x axis is the country.
 # The column that has the country value of "USA" should have it's bar colored red.
 
 ggplot(explicit_percent_by_country, aes(x = country, y = percent, fill = country)) +
@@ -367,5 +367,24 @@ ggplot(explicit_percent_by_country, aes(x = country, y = percent, fill = country
 ```
 
 ![](README_files/figure-gfm/unnamed-chunk-11-1.png)<!-- -->
+
+## Tempo by Country
+
+We can also look at the average tempo of songs by country.
+
+``` r
+# We can create a new dataframe that calculates the average tempo for each country
+tempo_by_country <- cleaned_joined_data %>%
+  group_by(country) %>%
+  summarise(avg_tempo = mean(tempo))
+
+# Then, we create a visual that shows the average tempo for each country
+ggplot(tempo_by_country, aes(x = country, y = avg_tempo)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+  labs(x = "Country", y = "Average Tempo", title = "Average Tempo by Country")
+```
+
+![](README_files/figure-gfm/unnamed-chunk-12-1.png)<!-- -->
 
 …and so on and so forth.
