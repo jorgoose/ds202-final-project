@@ -5,7 +5,9 @@
     <https://www.kaggle.com/datasets/asaniczka/top-spotify-songs-in-73-countries-daily-updated/universal_top_spotify_songs.csv>
   - GDP Data: IMF Website
 
-# DS 202 Final Project - Spotify Data by Country Analysis Using R
+# DS 202 Final Project
+
+## Spotify Data by Country Analysis Using R
 
 The goal of this project is to analyze the Spotify data by country, and
 see if there are any interesting trends or correlations between the data
@@ -305,7 +307,7 @@ ggplot(zaf_most_popular_song, aes(x = name)) +
 
 ![](README_files/figure-gfm/unnamed-chunk-9-1.png)<!-- -->
 
-# Number of Explicit vs. Non-Explicit Song Appearances by Country
+## Number of Explicit vs. Non-Explicit Song Appearances by Country
 
 ``` r
 # Create a new dataframe that counts the number of explicit and non-explicit songs for each country (true or false in is_explicit column). Exlcude entries with country value of <NA>.
@@ -354,22 +356,6 @@ explicit_percent_by_country <- explicit_vs_non_explicit %>%
   group_by(country) %>%
   mutate(percent = count / sum(count) * 100)
 
-# Display the first 6 rows of the data
-head(explicit_percent_by_country)
-```
-
-    ## # A tibble: 6 × 4
-    ## # Groups:   country [3]
-    ##   country is_explicit count percent
-    ##   <chr>   <chr>       <int>   <dbl>
-    ## 1 ARE     False         733    63.6
-    ## 2 ARE     True          420    36.4
-    ## 3 ARG     False         743    64.6
-    ## 4 ARG     True          407    35.4
-    ## 5 AUS     False         749    65.0
-    ## 6 AUS     True          403    35.0
-
-``` r
 # Create a visual that shows the percentage column value, where the y axis is the percentage of songs that are explicit for each country and the x axis is the country.
 # The column that has the country value of "USA" should have it's bar colored red.
 
