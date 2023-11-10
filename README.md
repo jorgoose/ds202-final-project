@@ -305,4 +305,83 @@ ggplot(zaf_most_popular_song, aes(x = name)) +
 
 ![](README_files/figure-gfm/unnamed-chunk-9-1.png)<!-- -->
 
+# Number of Explicit vs. Non-Explicit Song Appearances by Country
+
+``` r
+# Create a new dataframe that counts the number of explicit and non-explicit songs for each country (true or false in is_explicit column). Exlcude entries with country value of <NA>.
+explicit_vs_non_explicit <- cleaned_joined_data %>%
+  filter(!is.na(country)) %>%
+  group_by(country, is_explicit) %>%
+  summarise(count = n())
+```
+
+    ## `summarise()` has grouped output by 'country'. You can override using the
+    ## `.groups` argument.
+
+``` r
+# Display the first 6 rows of the data
+head(explicit_vs_non_explicit)
+```
+
+    ## # A tibble: 6 × 3
+    ## # Groups:   country [3]
+    ##   country is_explicit count
+    ##   <chr>   <chr>       <int>
+    ## 1 ARE     False         733
+    ## 2 ARE     True          420
+    ## 3 ARG     False         743
+    ## 4 ARG     True          407
+    ## 5 AUS     False         749
+    ## 6 AUS     True          403
+
+``` r
+# Create a visual that shows the number of explicit and non-explicit songs for each country
+ggplot(explicit_vs_non_explicit, aes(x = country, y = count, fill = is_explicit)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+  labs(x = "Country", y = "Number of Songs", title = "Number of Explicit vs. Non-Explicit Songs by Country")
+```
+
+![](README_files/figure-gfm/unnamed-chunk-10-1.png)<!-- -->
+
+This visual is a bit hard to look at, so instead we can create a visual
+that shows the percentage of explicit songs as a percentage of all songs
+for each country.
+
+``` r
+# We can add a new column that represents the percentage of songs that are explicit for each country
+explicit_percent_by_country <- explicit_vs_non_explicit %>%
+  group_by(country) %>%
+  mutate(percent = count / sum(count) * 100)
+
+# Display the first 6 rows of the data
+head(explicit_percent_by_country)
+```
+
+    ## # A tibble: 6 × 4
+    ## # Groups:   country [3]
+    ##   country is_explicit count percent
+    ##   <chr>   <chr>       <int>   <dbl>
+    ## 1 ARE     False         733    63.6
+    ## 2 ARE     True          420    36.4
+    ## 3 ARG     False         743    64.6
+    ## 4 ARG     True          407    35.4
+    ## 5 AUS     False         749    65.0
+    ## 6 AUS     True          403    35.0
+
+``` r
+# Create a visual that shows the percentage column value, where the y axis is the percentage of songs that are explicit for each country and the x axis is the country
+ggplot(explicit_percent_by_country, aes(x = country, y = percent)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+  labs(x = "Country", y = "Percentage of Songs that are Explicit", title = "Percentage of Explicit Songs by Country")
+```
+
+![](README_files/figure-gfm/unnamed-chunk-11-1.png)<!-- -->
+
+``` 
+```
+
+\`\`\`
+
 …and so on and so forth.
