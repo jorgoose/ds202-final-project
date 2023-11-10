@@ -3,6 +3,10 @@ Kaggle Spotify Countries dataset link: https://www.kaggle.com/datasets/asaniczka
 Background: There is data stored in an Excel file titled "imf_data.xls" in the same folder that I'm currently in, in VSCode. I need to extract this data into a dataframe
 
 ```{r}
+
+# Load ggplot2 package
+library(ggplot2)
+
 # Load the readxl package
 library(readxl)
 
@@ -110,6 +114,27 @@ Now, all of the data is cleaned, and merged into one dataframe. We can now start
 
 ```
 
+DATA CLEANING ENDS HERE
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+DATA ANALYSIS BEGINS HERE
+
+EXAMPLE of analyzing data: Most popular song in ZAF by day
+  
+```{r}
+# For the data in each row with `country` equal to "ZAF" with the `daily rank` column equal to 1, show the `name` and `snapshot_date` column
+zaf_most_popular_song <- cleaned_joined_data %>%
+  filter(country == "ZAF" & daily_rank == 1) %>%
+  select(name, snapshot_date)
+
+# Display the first 6 rows of the data
+head(zaf_most_popular_song)
+
+# Create a visual that counts how many times each song was the most popular song in ZAF
+ggplot(zaf_most_popular_song, aes(x = name)) +
+  geom_bar() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+  labs(x = "Song Name", y = "Number of Days as Most Popular Song", title = "Most Popular Song in ZAF by Day")
+```
 
 
 
