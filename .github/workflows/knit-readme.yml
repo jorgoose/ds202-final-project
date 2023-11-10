@@ -49,9 +49,6 @@ jobs:
       - name: Knit README.Rmd to README.md
         run: Rscript -e "rmarkdown::render('README.Rmd', output_format = 'github_document', output_file = 'README.md')"
 
-      - name: Knit README.Rmd to README.md
-        run: Rscript -e "rmarkdown::render('README.Rmd', output_format = 'github_document')"
-
       - name: Configure Git
         run: |
           git config user.name "github-actions[bot]"
