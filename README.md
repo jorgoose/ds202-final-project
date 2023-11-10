@@ -20,28 +20,9 @@ GDP and the popularity of a certain genre of music in that country.
 library(ggplot2) # Used for data visualization
 library(readxl) # Used for reading in Excel files
 library(dplyr) # Used for data manipulation
-```
 
-    ## 
-    ## Attaching package: 'dplyr'
-
-    ## The following objects are masked from 'package:stats':
-    ## 
-    ##     filter, lag
-
-    ## The following objects are masked from 'package:base':
-    ## 
-    ##     intersect, setdiff, setequal, union
-
-``` r
 # Install and load the countrycode package, which will be used to convert between country codes (why this is needed is explained later in the project)
 install.packages("countrycode", repos="https://cran.r-project.org")
-```
-
-    ## Installing package into '/home/runner/work/_temp/Library'
-    ## (as 'lib' is unspecified)
-
-``` r
 library(countrycode)
 ```
 
