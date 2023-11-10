@@ -285,9 +285,9 @@ head(cleaned_joined_data[, c("country", "2021 GDP per capita", "artists")])
     ## 55                                 Kamo Mphela, Tyler ICU, Khalil Harrison, Baby S.O.N
     ## 56                                                                                Tyla
 
-## DATA CLEANING ENDS HERE
+## <!-- End of Data Cleaning and Preprocessing -->
 
-DATA ANALYSIS BEGINS HERE
+<!-- Beginning of Data Exploration and Analysis -->
 
 # Data Exploration and Analysis
 
