@@ -226,11 +226,4 @@ ggplot(tempo_by_region, aes(x = Region, y = avg_tempo, fill = Region)) +
   labs(x = "Region", y = "Average Tempo", title = "Average Tempo by Region")
 ```
 
-
-```{r}
-print("Howdy")
-```
-
-
-
 ...and so on and so forth.
