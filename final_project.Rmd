@@ -19,7 +19,6 @@ library(dplyr) # Used for data manipulation
 install.packages("countrycode", repos="https://cran.r-project.org")
 library(countrycode)
 ```
-
 ---
 
 ## Importing the IMF GDP-by-Country Data
@@ -225,6 +224,11 @@ ggplot(tempo_by_region, aes(x = Region, y = avg_tempo, fill = Region)) +
   geom_bar(stat = "identity", position = "dodge") +
   theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
   labs(x = "Region", y = "Average Tempo", title = "Average Tempo by Region")
+```
+
+
+```{r}
+print("Howdy")
 ```
 
 
