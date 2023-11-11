@@ -415,10 +415,4 @@ ggplot(tempo_by_region, aes(x = Region, y = avg_tempo, fill = Region)) +
 
 ![](README_files/figure-gfm/unnamed-chunk-13-1.png)<!-- -->
 
-``` r
-print("Howdy")
-```
-
-    ## [1] "Howdy"
-
 …and so on and so forth.
