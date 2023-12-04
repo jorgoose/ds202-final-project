@@ -32,7 +32,6 @@ There is data stored in an Excel workbook file titled "imf_data.xls". Below, we 
 imf_data <- read_excel("imf_data.xls", sheet = "Data", skip = 3, col_names = TRUE)
 
 # View the first 6 rows of the data
-head(imf_data)
 
 ```
 
@@ -226,4 +225,23 @@ ggplot(tempo_by_region, aes(x = Region, y = avg_tempo, fill = Region)) +
   labs(x = "Region", y = "Average Tempo", title = "Average Tempo by Region")
 ```
 
-...and so on and so forth.
+<!-- Now, we can plot every data point in the dataset by various metrics. We can start with plotting all the datapoints uainf "2021 GDP per capita" as the x-axis and danceability as the y-axis for all rows of the joined dataset  -->
+
+## Danceability by GDP per Capita
+We can plot the danceability of songs by the GDP per capita of the country.
+
+```{r, fig.width=20, fig.height=10}
+# We need get the average of danceability and the average "2021 GDP per capita" for each country. Excluding entries with country value of <NA>. Then we will plot the data as a scatterplot, with the x-axis being the average "2021 GDP per capita" and the y-axis being the average danceability.
+danceability_and_gdp_by_country <- cleaned_joined_data %>%
+  filter(!is.na(country)) %>%
+  group_by(country) %>%
+  summarise(avg_danceability = mean(danceability), avg_gdp = mean(`2021 GDP per capita`))
+
+# Then, we create a visual that shows the average danceability for each country, colored by region
+ggplot(danceability_and_gdp_by_country, aes(x = avg_gdp, y = avg_danceability, color = country)) +
+  geom_point() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+  labs(x = "2021 GDP per capita", y = "Average Danceability", title = "Average Danceability by GDP per Capita")
+```
+
+
