@@ -43,25 +43,7 @@ and store it in a dataframe.
 imf_data <- read_excel("imf_data.xls", sheet = "Data", skip = 3, col_names = TRUE)
 
 # View the first 6 rows of the data
-head(imf_data)
 ```
-
-    ## # A tibble: 6 × 67
-    ##   `Country Name`  `Country Code` `Indicator Name` `Indicator Code` `1960` `1961`
-    ##   <chr>           <chr>          <chr>            <chr>             <dbl>  <dbl>
-    ## 1 Aruba           ABW            GDP per capita … NY.GDP.PCAP.CD     NA     NA  
-    ## 2 Africa Eastern… AFE            GDP per capita … NY.GDP.PCAP.CD    162.   161. 
-    ## 3 Afghanistan     AFG            GDP per capita … NY.GDP.PCAP.CD     62.4   62.4
-    ## 4 Africa Western… AFW            GDP per capita … NY.GDP.PCAP.CD    107.   113. 
-    ## 5 Angola          AGO            GDP per capita … NY.GDP.PCAP.CD     NA     NA  
-    ## 6 Albania         ALB            GDP per capita … NY.GDP.PCAP.CD     NA     NA  
-    ## # ℹ 61 more variables: `1962` <dbl>, `1963` <dbl>, `1964` <dbl>, `1965` <dbl>,
-    ## #   `1966` <dbl>, `1967` <dbl>, `1968` <dbl>, `1969` <dbl>, `1970` <dbl>,
-    ## #   `1971` <dbl>, `1972` <dbl>, `1973` <dbl>, `1974` <dbl>, `1975` <dbl>,
-    ## #   `1976` <dbl>, `1977` <dbl>, `1978` <dbl>, `1979` <dbl>, `1980` <dbl>,
-    ## #   `1981` <dbl>, `1982` <dbl>, `1983` <dbl>, `1984` <dbl>, `1985` <dbl>,
-    ## #   `1986` <dbl>, `1987` <dbl>, `1988` <dbl>, `1989` <dbl>, `1990` <dbl>,
-    ## #   `1991` <dbl>, `1992` <dbl>, `1993` <dbl>, `1994` <dbl>, `1995` <dbl>, …
 
 ## Filtering the IMF GDP-by-Country Data from the Excel Workbook
 
@@ -247,8 +229,83 @@ joined_data <- left_join(spotify_data_alpha3, merged_imf_data, by = c("country" 
 cleaned_joined_data <- joined_data[!is.na(joined_data$country), ]
 
 # Show the first 6 rows of the joined data
-# head(cleaned_joined_data)
+head(cleaned_joined_data)
+```
 
+    ##                spotify_id
+    ## 51 5yyYL1FpimADTIftYQU0cg
+    ## 52 5C9h6ZyskUiyAVDmhSfSdP
+    ## 53 7JbLSEDlRdoJaXk5ddZae2
+    ## 54 6Kijtp0DB6VwcoJIw7PJ9W
+    ## 55 4URabg9AGHasjFEVdTbWcC
+    ## 56 5aIVCx5tnk0ntmdiinnYvw
+    ##                                                                               name
+    ## 51                                                                           iPlan
+    ## 52                                               Imnandi lento (feat. Tman Xpress)
+    ## 53                                                                           Paris
+    ## 54 Imithandazo (feat. Young Stunna, DJ Maphorisa, Sizwe Alakine & Umthakathi Kush)
+    ## 55                                                        Dalie (feat. Baby S.O.N)
+    ## 56                                                                           Water
+    ##                                                                                artists
+    ## 51                                                          Dlala Thukzin, Zaba, Sykes
+    ## 52                                 Mellow & Sleazy, SjavasDaDeejay, TitoM, Tman Xpress
+    ## 53                                                        Mthandeni SK, Lwah Ndlunkulu
+    ## 54 Kabza De Small, Mthunzi, DJ Maphorisa, Young Stunna, Sizwe Alakine, Umthakathi Kush
+    ## 55                                 Kamo Mphela, Tyler ICU, Khalil Harrison, Baby S.O.N
+    ## 56                                                                                Tyla
+    ##    daily_rank daily_movement weekly_movement country snapshot_date popularity
+    ## 51          1              0               0     ZAF    2023-11-09         68
+    ## 52          2              0               0     ZAF    2023-11-09         70
+    ## 53          3              0               2     ZAF    2023-11-09         64
+    ## 54          4              4               5     ZAF    2023-11-09         59
+    ## 55          5             -1              -2     ZAF    2023-11-09         46
+    ## 56          6              0              -2     ZAF    2023-11-09         95
+    ##    is_explicit duration_ms                        album_name album_release_date
+    ## 51       False      410847                 Permanent Music 3         2023-09-15
+    ## 52       False      447834 Imnandi lento (feat. Tman Xpress)         2023-08-18
+    ## 53       False      257959                             Paris         2023-08-09
+    ## 54       False      351200                             Isimo         2023-10-27
+    ## 55       False      280424          Dalie (feat. Baby S.O.N)         2023-10-11
+    ## 56       False      200255                             Water         2023-07-28
+    ##    danceability energy key loudness mode speechiness acousticness
+    ## 51        0.697  0.643   5  -10.253    0      0.0384      0.07090
+    ## 52        0.861  0.524   6  -13.325    0      0.0667      0.06000
+    ## 53        0.619  0.903   1   -4.659    1      0.0693      0.02960
+    ## 54        0.806  0.767   6   -9.686    0      0.1120      0.17900
+    ## 55        0.831  0.568   1   -9.984    1      0.0515      0.00005
+    ## 56        0.673  0.722   3   -3.495    0      0.0755      0.08560
+    ##    instrumentalness liveness valence   tempo time_signature 2021 GDP per capita
+    ## 51         0.584000   0.1010   0.748 118.004              4            7055.055
+    ## 52         0.000776   0.0231   0.632 111.982              4            7055.055
+    ## 53         0.001990   0.1900   0.964 154.639              4            7055.055
+    ## 54         0.001260   0.1820   0.795 113.001              4            7055.055
+    ## 55         0.090100   0.1220   0.160 113.009              4            7055.055
+    ## 56         0.000000   0.1370   0.519 117.187              4            7055.055
+    ##                Region         IncomeGroup
+    ## 51 Sub-Saharan Africa Upper middle income
+    ## 52 Sub-Saharan Africa Upper middle income
+    ## 53 Sub-Saharan Africa Upper middle income
+    ## 54 Sub-Saharan Africa Upper middle income
+    ## 55 Sub-Saharan Africa Upper middle income
+    ## 56 Sub-Saharan Africa Upper middle income
+    ##                                                                   SpecialNotes
+    ## 51 Fiscal year end: March 31; reporting period for national accounts data: CY.
+    ## 52 Fiscal year end: March 31; reporting period for national accounts data: CY.
+    ## 53 Fiscal year end: March 31; reporting period for national accounts data: CY.
+    ## 54 Fiscal year end: March 31; reporting period for national accounts data: CY.
+    ## 55 Fiscal year end: March 31; reporting period for national accounts data: CY.
+    ## 56 Fiscal year end: March 31; reporting period for national accounts data: CY.
+    ##       TableName
+    ## 51 South Africa
+    ## 52 South Africa
+    ## 53 South Africa
+    ## 54 South Africa
+    ## 55 South Africa
+    ## 56 South Africa
+
+<!-- Another sample / test just to explore the joined data -->
+
+``` r
 # Display the first 6 rows of the joined data for `country`, `2021 GDP per capita` and `artists` columns to show that the join merged the data correctly
 head(cleaned_joined_data[, c("country", "2021 GDP per capita", "artists")])
 ```
@@ -305,7 +362,7 @@ ggplot(zaf_most_popular_song, aes(x = name)) +
   labs(x = "Song Name", y = "Number of Days as Most Popular Song", title = "Most Popular Song in ZAF by Day")
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-9-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-10-1.png)<!-- -->
 
 ## Number of Explicit vs. Non-Explicit Song Appearances by Country
 
@@ -344,7 +401,7 @@ ggplot(explicit_vs_non_explicit, aes(x = country, y = count, fill = is_explicit)
   labs(x = "Country", y = "Number of Songs", title = "Number of Explicit vs. Non-Explicit Songs by Country")
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-10-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-11-1.png)<!-- -->
 
 This visual is a bit hard to look at, so instead we can create a visual
 that shows the percentage of explicit songs as a percentage of all songs
@@ -366,7 +423,7 @@ ggplot(explicit_percent_by_country, aes(x = country, y = percent, fill = country
   scale_fill_manual(values = c("USA" = "darkred"))
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-11-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-12-1.png)<!-- -->
 
 ## Tempo by Country
 
@@ -392,7 +449,7 @@ ggplot(tempo_by_country, aes(x = country, y = avg_tempo, fill = Region)) +
   labs(x = "Country", y = "Average Tempo", title = "Average Tempo by Country")
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-12-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-13-1.png)<!-- -->
 
 ## Tempo by Region
 
@@ -413,6 +470,29 @@ ggplot(tempo_by_region, aes(x = Region, y = avg_tempo, fill = Region)) +
   labs(x = "Region", y = "Average Tempo", title = "Average Tempo by Region")
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-13-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-14-1.png)<!-- -->
 
-…and so on and so forth.
+<!-- Now, we can plot every data point in the dataset by various metrics. We can start with plotting all the datapoints uainf "2021 GDP per capita" as the x-axis and danceability as the y-axis for all rows of the joined dataset  -->
+
+## Danceability by GDP per Capita
+
+We can plot the danceability of songs by the GDP per capita of the
+country.
+
+``` r
+# We need get the average of danceability and the average "2021 GDP per capita" for each country. Excluding entries with country value of <NA>. Then we will plot the data as a scatterplot, with the x-axis being the average "2021 GDP per capita" and the y-axis being the average danceability.
+danceability_and_gdp_by_country <- cleaned_joined_data %>%
+  filter(!is.na(country)) %>%
+  group_by(country) %>%
+  summarise(avg_danceability = mean(danceability), avg_gdp = mean(`2021 GDP per capita`))
+
+# Then, we create a visual that shows the average danceability for each country, colored by region
+ggplot(danceability_and_gdp_by_country, aes(x = avg_gdp, y = avg_danceability, color = country)) +
+  geom_point() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+  labs(x = "2021 GDP per capita", y = "Average Danceability", title = "Average Danceability by GDP per Capita")
+```
+
+    ## Warning: Removed 2 rows containing missing values (`geom_point()`).
+
+![](README_files/figure-gfm/unnamed-chunk-15-1.png)<!-- -->
