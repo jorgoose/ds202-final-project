@@ -118,8 +118,11 @@ joined_data <- left_join(spotify_data_alpha3, merged_imf_data, by = c("country" 
 cleaned_joined_data <- joined_data[!is.na(joined_data$country), ]
 
 # Show the first 6 rows of the joined data
-# head(cleaned_joined_data)
+head(cleaned_joined_data)
+```
 
+<!-- Another sample / test just to explore the joined data -->
+```{r}
 # Display the first 6 rows of the joined data for `country`, `2021 GDP per capita` and `artists` columns to show that the join merged the data correctly
 head(cleaned_joined_data[, c("country", "2021 GDP per capita", "artists")])
 ```
