@@ -1,0 +1,22 @@
+---
+title: "Outline Of Exploration"
+author: "David Szczepanik, Devdatta Kasture, Logan Jorgensen"
+date: "2023-11-27"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Research Topic: Music Preferences Based on GDP per Capita per Country
+
+Team Members: David Szczepanik Devdatta Kasture, Logan Jorgensen
+
+Data: We have an excel sheet (imf_data.xls) which contains the GDP per Capita data that we will need for half of the data we are trying to investigate. It contains the yearly GDP per Capita for 267 recognized Countries/Territories, with data going back all the way back to 1960. We also have a csv file (universal_top_spotify_songs.csv) which contains the data from a popular music streaming platform spotify, which includes the top listened songs for countries. 
+
+Question to be addressed: Do music preferences correlate with GDP per capita in different countries?
+
+Data Exploration Idea: 
+
+So, our data needs to be cleaned, especially our spotify data. We can remove any songs with no country specified, and any country/territory that is featured in the spotify data that doesn't have GDP data (or vice versa). We will then combine the two data sets into one, and explore different scenarios with graphs. Exploring top genres by continent, by GDP, etc., to see if a coorrelation can be identified and researched further.
