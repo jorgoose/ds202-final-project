@@ -496,3 +496,21 @@ ggplot(danceability_and_gdp_by_country, aes(x = avg_gdp, y = avg_danceability, c
     ## Warning: Removed 2 rows containing missing values (`geom_point()`).
 
 ![](README_files/figure-gfm/unnamed-chunk-15-1.png)<!-- -->
+
+``` r
+# No, we do the same thing as above, but instead of danceability, we use valence
+valence_and_gdp_by_country <- cleaned_joined_data %>%
+  filter(!is.na(country)) %>%
+  group_by(country) %>%
+  summarise(avg_valence = mean(valence), avg_gdp = mean(`2021 GDP per capita`))
+
+# Then, we create a visual that shows the average valence for each country, colored by region
+ggplot(valence_and_gdp_by_country, aes(x = avg_gdp, y = avg_valence, color = country)) +
+  geom_point() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+  labs(x = "2021 GDP per capita", y = "Average Valence", title = "Average Valence by GDP per Capita")
+```
+
+    ## Warning: Removed 2 rows containing missing values (`geom_point()`).
+
+![](README_files/figure-gfm/unnamed-chunk-16-1.png)<!-- -->
