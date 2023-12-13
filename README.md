@@ -5,37 +5,53 @@
     <https://www.kaggle.com/datasets/asaniczka/top-spotify-songs-in-73-countries-daily-updated/universal_top_spotify_songs.csv>
   - GDP Data: IMF Website
 
-# DS 202 Final Project
+# DS 202 Final Project : Spotify Data by Country Analysis Using R
 
-## Spotify Data by Country Analysis Using R
+Authors: Logan Jorgensen, David Szczepanik, Devdatta Kasture
 
-The goal of this project is to analyze the Spotify data by country, and
-see if there are any interesting trends or correlations between the data
-and other data sources.
+# Introduction
 
-For example, we could see if there is a correlation between a country’s
-GDP and the popularity of a certain genre of music in that country.
+The goal of this report is to analyze Spotify’s listening data by
+country/region, and see if there are any interesting trends or
+correlations between the data and other sources. For our particular
+report, we are comparing the Spotify listening data against the GDP of a
+country, and investigating if there are any noticeable strong trends
+between a country’s GDP and the music its people listen to. Although the
+data we have does not include genre/subgenres, Spotify has a few metrics
+it applies to each song in their database which can give us an
+understanding of what kind of music is being listened to in a specific
+country. We shall explore some of these metrics within our project
+below.
 
------
+# Data
+
+## Importing Libraries Used in our Report
+
+Down below are the libraries that we used within our investigation. We
+used ggplot2 for data visualization, readxl for reading in our excel
+sheet, dplyr for data manipulation and countrycode, which was used due
+to a discrepancy in two-character and three-character country codes.
 
 ``` r
-library(ggplot2) # Used for data visualization
-install.packages("readxl", repos="https://cran.r-project.org")
-library(readxl) # Used for reading in Excel files
-library(dplyr) # Used for data manipulation
+library(ggplot2)
 
-# Install and load the countrycode package, which will be used to convert between country codes (why this is needed is explained later in the project)
+install.packages("readxl", repos="https://cran.r-project.org")
+library(readxl)
+library(dplyr)
+
 install.packages("countrycode", repos="https://cran.r-project.org")
 library(countrycode)
 ```
 
------
-
 ## Importing the IMF GDP-by-Country Data
 
-There is data stored in an Excel workbook file titled “imf\_data.xls”.
-Below, we will extract the data from the “Data” sheet of the workbook,
-and store it in a dataframe.
+The GDP country data from the IMF website is made available in an excel
+workbook (.xls) format. The following code extracted the data from the
+sheet in the file called “Data”, and stored it in a dataframe called
+imf\_data for our investigation. We made some adjustments to only
+include the data that we needed, such as skipping the first three rows
+of data that were not useful for our investigation, as can be seen
+below.
 
 ``` r
 # Read in the Excel file with the read_excel() function. The data desired is in the "Data" sheet. The first three rows are info for the user, so we skip them.
@@ -48,8 +64,14 @@ imf_data <- read_excel("imf_data.xls", sheet = "Data", skip = 3, col_names = TRU
 
 ## Filtering the IMF GDP-by-Country Data from the Excel Workbook
 
-We are aiming to join this GDP data into our Spotify data. We will need
-to do some data cleaning / preprocessing first.
+Once we had extracted the data from the excel workbook, we had a useable
+dataframe to work off of. Our next step would be to prepare this
+dataframe by cleaning the data and pre-processing the dataframe for a
+merge with the spotify data in the future. We only used data from the
+most recent year avaiable to study only the most recent information
+available, which in this case was for the year 2021. We extracted the
+data for each country for that respective year, and renamed the column
+in our dataframe to 2021 GDP per capita for descriptiveness.
 
 ``` r
 # The only columns we need are the `Country Code` and `2021` columns.
@@ -74,9 +96,16 @@ head(filtered_imf_gdp_data)
 
 ## Combining Extra Metadeta from the IMF Excel Workbook
 
-Within the Excel workbook from the IMF, there is another sheet titled
-“Metadata - Countries” that contains metadata for each country. We can
-add this data to the filtered data to provide more context.
+Within the same GDP Excel workbook from earlier, there was another sheet
+named “Metadata - Countries”, which contained exactly what it is named -
+the metadata for each country. It included the region, income level, any
+special notes, and the full name for every country, which not only
+provides more context to some of these countries, but could be also used
+for further exploratory analysis. We took the metadata and stored it in
+it’s own dataframe, before merging it with the dataframe above to create
+one large dataframe of exactly the information we needed to move on:
+Country Code, GDP per capita (2021), Region, Income Group, Special
+Notes, and Table Name. We shall move on to the spotify data next.
 
 ``` r
 # Read in the Excel file, this time from the sheet "Metadata - Countries"
@@ -103,12 +132,11 @@ head(merged_imf_data)
 
 ## Pulling in the Spotify Data
 
-Now that the data is gathered and filtered from the original IMF Excel
-workbook, it should be ready to be joined into the main Spotify data.
-
-The Spotify dataset has been downloaded from Kaggle and added to this
-project, and is stored in the file “universal\_top\_spotify\_songs.csv”.
-We can read this data into a dataframe using the read.csv() function.
+Now that the GDP data has been gathered, filtered, and made ready to
+join the spotify data, we move on to doing the same thing for the
+spotify data. The spotify dataset has been downloaded from Kaggle, and
+is stored under the name “universal\_top\_spotify\_songs.csv”. We
+started off by reading this data into a dataframe.
 
 ``` r
 # Read in the Spotify data
@@ -163,10 +191,13 @@ head(spotify_data)
 
 ## Dealing With Inconsistent Country Code Data
 
-There is a discrepency between the two datasets: the IMF dataset uses
-Alpha-3 ISO codes for countries, while the Spotify dataset uses Alpha-2
-ISO codes. We will need to convert the Alpha-3 codes and Alpha-2 codes
-to the actual country names, and then join the two datasets.
+This is where we came across an issue that required the countrycode
+library. There was a discrepancy between the two datasets: the IMF
+dataset uses Alpha-3 ISO codes for countries, while the Spotify dataset
+uses Alpha-2 ISO codes. Below we convert both the Alpha-3 codes, and the
+Alpha-2 codes, all to their country names using the library. This
+ensured we have the country names associated to the data going forward
+in our exploration, rather than country codes.
 
 ``` r
 # Convert the Alpha-2 codes in the Spotify data `country` column to Alpha-3 codes to match the IMF data in a new dataframe copy of the Spotify data
@@ -179,19 +210,6 @@ spotify_data_alpha3 <- spotify_data %>%
     ## Caused by warning:
     ## ! Some values were not matched unambiguously:
 
-``` r
-# Display the first 6 unique values in the `country` column of the Spotify data that aren't <NA>
-unique(spotify_data_alpha3$country, incomparables = FALSE)
-```
-
-    ##  [1] NA    "ZAF" "VNM" "VEN" "URY" "USA" "UKR" "TWN" "TUR" "THA" "SLV" "SVK"
-    ## [13] "SGP" "SWE" "SAU" "ROU" "PRY" "PRT" "POL" "PAK" "PHL" "PER" "PAN" "NZL"
-    ## [25] "NOR" "NLD" "NIC" "NGA" "MYS" "MEX" "MAR" "LVA" "LUX" "LTU" "KAZ" "KOR"
-    ## [37] "JPN" "ITA" "ISL" "IND" "ISR" "IRL" "IDN" "HUN" "HND" "HKG" "GTM" "GRC"
-    ## [49] "GBR" "FRA" "FIN" "ESP" "EGY" "EST" "ECU" "DOM" "DNK" "DEU" "CZE" "CRI"
-    ## [61] "COL" "CHL" "CHE" "CAN" "BLR" "BRA" "BOL" "BGR" "BEL" "AUS" "AUT" "ARG"
-    ## [73] "ARE"
-
 ## Joining the IMF and Spotify Data
 
 Now that we’ve converted the country codes in the Spotify (when
@@ -200,9 +218,10 @@ datasets.
 
 ### Checking for Overlapping Country Codes
 
-First, it’s probably a good idea to check that the country codes in the
-two datasets match up. We can do this by checking for any country codes
-that are in both datasets:
+We checked to see if there were any matches between the country codes
+between the two datasets. As you can see below, we have valid workable
+data between 71 countries, more than enough to explore possible
+coorelations.
 
 ``` r
 # Show the country codes that overlap between spotify_data_alpha3's `country` column and merged_imf_data's `Country Code` column
@@ -218,9 +237,11 @@ intersect(spotify_data_alpha3$country, merged_imf_data$`Country Code`)
 
 ### Joining the Two Datasets on the Country Code
 
-Based on this output, we should be able to join the two datasets on the
-`Country Code` in merged\_imf\_data and `country` in
-spotify\_data\_alpha3.
+Based on the output from above, we were able to join the two datasets on
+the `Country Code` from the GDP dataframe and `country` from the Spotify
+dataframe, to create one big dataframe for our project. This concludes
+our data cleaning, and move on to exploring the merged data and
+beginning to study the results.
 
 ``` r
 # Code to join the two datasets on the `Country Code` and `country` columns, and store the result in a new dataframe called `joined_data`.
@@ -332,10 +353,11 @@ head(cleaned_joined_data[, c("country", "2021 GDP per capita", "artists")])
 
 # Data Exploration and Analysis
 
-Now, all of the data is cleaned, and merged into one dataframe. We can
-now start to explore the data.
-
-EXAMPLE of analyzing data: Most popular song in ZAF by day
+Below is an example of how we can extract and analyze data from our new
+dataframe; We can not only quickly create a dataframe to hold the most
+popular song in the country with the code ZAF, but display it and chart
+it all within the same group of code. This is how we will explore the
+data further into our report.
 
 ``` r
 # For the data in each row with `country` equal to "ZAF" with the `daily rank` column equal to 1, show the `name` and `snapshot_date` column
@@ -366,6 +388,17 @@ ggplot(zaf_most_popular_song, aes(x = name)) +
 ![](README_files/figure-gfm/unnamed-chunk-10-1.png)<!-- -->
 
 ## Number of Explicit vs. Non-Explicit Song Appearances by Country
+
+Our first investigation was to compare how many explicit
+vs. non-explicit songs each country listens to. We wanted to explore if
+there would be a correlation between a country’s GDP and explicitness of
+the music a country listens to. The first visual below, as you can
+probably tell, was very hard to look at, so we ended up creating a
+second visual which included the same data, but rather than displaying
+both the number of explicit and non-explicit songs, we ended up only
+displaying the percentage of explicit songs over the count of total
+songs for each country. We also colored in the bar for the United States
+for visual purposes.
 
 ``` r
 # We can create a new dataframe that counts the number of explicit and non-explicit songs for each country (true or false in is_explicit column). Exlcude entries with country value of <NA>.
@@ -404,10 +437,6 @@ ggplot(explicit_vs_non_explicit, aes(x = country, y = count, fill = is_explicit)
 
 ![](README_files/figure-gfm/unnamed-chunk-11-1.png)<!-- -->
 
-This visual is a bit hard to look at, so instead we can create a visual
-that shows the percentage of explicit songs as a percentage of all songs
-for each country.
-
 ``` r
 # We can add a new column that represents the percentage of songs that are explicit for each country
 explicit_percent_by_country <- explicit_vs_non_explicit %>%
@@ -428,7 +457,15 @@ ggplot(explicit_percent_by_country, aes(x = country, y = percent, fill = country
 
 ## Tempo by Country
 
-We can also look at the average tempo of songs by country.
+After exploring the explicitness data per country, we moved onto the
+average tempo of the top music per country. Generally speaking, songs
+with a higher tempo are often times more upbeat and share positive
+characteristics, while slower tempo music is often more relaxed and
+share neutral/negative characteristics. This is an excellent metric to
+study trends in music per country. Again, as was the case above, the
+chart was very hard to read, so we categorized the same tempo data by
+the region of each country and averaged them out over each region
+instead.
 
 ``` r
 # We can create a new dataframe that calculates the average tempo for each country with it's region value. Excluding entries with country value of <NA>.
@@ -454,9 +491,6 @@ ggplot(tempo_by_country, aes(x = country, y = avg_tempo, fill = Region)) +
 
 ## Tempo by Region
 
-We can also look at the average tempo of songs by region overall,
-instead of breaking it down by country.
-
 ``` r
 # We can create a new dataframe that calculates the average tempo for each region. Exlcuding entries with country value of <NA>.
 tempo_by_region <- cleaned_joined_data %>%
@@ -473,12 +507,16 @@ ggplot(tempo_by_region, aes(x = Region, y = avg_tempo, fill = Region)) +
 
 ![](README_files/figure-gfm/unnamed-chunk-14-1.png)<!-- -->
 
-<!-- Now, we can plot every data point in the dataset by various metrics. We can start with plotting all the datapoints uainf "2021 GDP per capita" as the x-axis and danceability as the y-axis for all rows of the joined dataset  -->
-
 ## Danceability by GDP per Capita
 
-We can plot the danceability of songs by the GDP per capita of the
-country.
+We can also explore one of Spotify’s custom song metrics for
+coorrelation between GDP and listening trends. Danceability, according
+to Spotify’s API, describes how suitable a track is for dancing based on
+a combination of musical elements. We kept Danceability on our report
+due to a bunch of repetition in results, but we also explored energy,
+speechiness, and acousticness to extremely similar results, and decided
+to omit for conciseness. Below is a chart that compares the Danceability
+metric against GDP.
 
 ``` r
 # We need get the average of danceability and the average "2021 GDP per capita" for each country. Excluding entries with country value of <NA>. Then we will plot the data as a scatterplot, with the x-axis being the average "2021 GDP per capita" and the y-axis being the average danceability.
@@ -498,27 +536,15 @@ ggplot(danceability_and_gdp_by_country, aes(x = avg_gdp, y = avg_danceability, c
 
 ![](README_files/figure-gfm/unnamed-chunk-15-1.png)<!-- -->
 
-``` r
-# Now, we do the same thing as above, but instead of danceability, we use valence
-valence_and_gdp_by_country <- cleaned_joined_data %>%
-  filter(!is.na(country)) %>%
-  group_by(country) %>%
-  summarise(avg_valence = mean(valence), avg_gdp = mean(`2021 GDP per capita`))
+## Danceability by GDP per Capity Quartile
 
-# Then, we create a visual that shows the average valence for each country, colored by region
-ggplot(valence_and_gdp_by_country, aes(x = avg_gdp, y = avg_valence, color = country)) +
-  geom_point() +
-  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
-  labs(x = "2021 GDP per capita", y = "Average Valence", title = "Average Valence by GDP per Capita")
-```
-
-    ## Warning: Removed 2 rows containing missing values (`geom_point()`).
-
-![](README_files/figure-gfm/unnamed-chunk-16-1.png)<!-- -->
-
-For more insight into the data, we can create the same scatterplot,
-except this time, color the points based on their quartile of GDP per
-capita.
+Building off of our Danceability investigation above, we furthered our
+exploration by dividing the GDP into quartiles, and created two charts
+based off of the quartile split rather than GDP value itself. Although
+the scatter plot is identical to the one above, the box plot which was
+not available to us before dividing up the GDP into quartiles gives us
+an insight to some coorrelation that no one expected. More on this in
+Results.
 
 ``` r
 danceability_and_gdp_by_country <- cleaned_joined_data %>%
@@ -543,7 +569,7 @@ ggplot(danceability_and_gdp_by_country, aes(x = avg_gdp, y = avg_danceability, c
   labs(x = "2021 GDP per capita", y = "Average Danceability", title = "Average Danceability by GDP per Capita Quartile")
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-17-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-16-1.png)<!-- -->
 
 ``` r
 # Create box plots for each GDP quartile
@@ -553,4 +579,92 @@ ggplot(danceability_and_gdp_by_country, aes(x = gdp_quartile, y = avg_danceabili
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
 
+![](README_files/figure-gfm/unnamed-chunk-17-1.png)<!-- -->
+
+## Valance by GDP per Capita
+
+We decided to plot Valance over GDP as well to include a metric that had
+a visible difference from Danceability. Valance, according to the
+Spotify API, is a measure from 0 to 100 describing the musical
+positiveness conveyed by a track. Again, it’s a metric developed by
+Spotify, but it can be explored just as all the other ones.
+
+``` r
+# Now, we do the same thing as above, but instead of danceability, we use valence
+valence_and_gdp_by_country <- cleaned_joined_data %>%
+  filter(!is.na(country)) %>%
+  group_by(country) %>%
+  summarise(avg_valence = mean(valence), avg_gdp = mean(`2021 GDP per capita`))
+
+# Then, we create a visual that shows the average valence for each country, colored by region
+ggplot(valence_and_gdp_by_country, aes(x = avg_gdp, y = avg_valence, color = country)) +
+  geom_point() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+  labs(x = "2021 GDP per capita", y = "Average Valence", title = "Average Valence by GDP per Capita")
+```
+
+    ## Warning: Removed 2 rows containing missing values (`geom_point()`).
+
 ![](README_files/figure-gfm/unnamed-chunk-18-1.png)<!-- -->
+
+# Results
+
+After exploring the data using our methods above, we found some
+incredible things that no one in our group expected.
+
+Starting off from the Percentage of Explicit Songs by Country bar chart,
+we were originally caught off-guard by how low the percentage of
+explicit music was for the United States compared to the rest of the
+world. It clicked when we took into consideration the volume of music
+that is created in the United States, both explicit and non-explicit,
+that helped justify the lower than average percentage. We were also
+slightly blown away that India had approximately 100% of it’s listening
+trends labelled as explicit.
+
+Looking at Tempo by Country didn’t give us exactly concrete information
+to work off of, but Logan’s idea of splitting up the data from
+country-based to region-based gave us one key outlier, and something to
+keep in mind going forward with the rest of the regions. The key
+outlier, South Asia, averaged a tempo of roughly 110 Beats per Minute,
+way lower than the 120 Beats per Minute that every other region hovered
+around. This could be used further to investigate whether there is a
+cultural influence in that region which leads to listening trends of
+slower music, such as genre preference or enjoyment of music.
+
+The greatest shock from this project can be located in the Average
+Danceability by GDP per Capita plot. As a team, we were not really
+expecting a strong coorrelation between music and GDP, but we were all
+taken by surprise when we saw the strong correlation between the
+danceability of a song and GDP. We can confidently present that there is
+a strong coorrelation between a higher danceability and lower GDP, which
+is further established by the boxplot we created when splitting the data
+into quartiles. The first and second quartiles were above a score of
+0.7, while third was at 0.7 and fourth was closer to 0.6 than 0.7. The
+same trends were followed by energy, speechiness, and acousticness
+metrics.
+
+The last chart we created compared Valance to GDP. We included this
+chart to show that some music metrics do not seem to be influenced by
+GDP. It can be noted that higher GDP has lower average valence but even
+at lower GDP, the results are so scattered we can confidently say there
+is no coorrelation between Valance (musical positiveness) and GDP.
+
+# Conclusion
+
+After exploring the data and concluding that there are some variables in
+music that are influenced by GDP, this leaves us in an excellent
+position moving forward. As stated earlier, some variables such as
+danceability, energy, etc. are influenced by GDP, which can be used to
+further our exploration. However, some things need to be addressed
+before furthering our studies; Countries with low GDP tend to be
+dominated by one artist, and some variables are not influenced by GDP.
+Some studies could be done to examine the music industries in lower GDP
+countries, and more data never hurts to have regarding the Spotify
+metrics that we examined earlier. Perhaps as more data becomes
+available, some data may begin to smooth out coorrelations or create new
+ones. If we were to continue working on this investigation, we would
+begin by simplifying the data into region-based analysis, and perhaps
+examining how Spotify recommends new music to its users or how music is
+being created in countries with differing economic stature. Overall, we
+were more than pleased to discover there is some coorrelation, and more
+than proud of the work we had done to reach our conclusion.
