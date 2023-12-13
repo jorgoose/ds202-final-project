@@ -661,10 +661,13 @@ dominated by one artist, and some variables are not influenced by GDP.
 Some studies could be done to examine the music industries in lower GDP
 countries, and more data never hurts to have regarding the Spotify
 metrics that we examined earlier. Perhaps as more data becomes
-available, some data may begin to smooth out coorrelations or create new
-ones. If we were to continue working on this investigation, we would
-begin by simplifying the data into region-based analysis, and perhaps
-examining how Spotify recommends new music to its users or how music is
-being created in countries with differing economic stature. Overall, we
-were more than pleased to discover there is some coorrelation, and more
-than proud of the work we had done to reach our conclusion.
+available, some data may begin to smooth out correlations or create new
+ones.Or having data such as genre or artist (and the artist’s country of
+origin) could help us narrow down certain trends in more diluted
+countries. If we were to continue working on this investigation, we
+would begin by simplifying the data into region-based analysis, and
+perhaps examining how Spotify recommends new music to its users or how
+music is being created in countries with differing economic stature.
+Overall, we were more than pleased to discover there is some
+coorrelation, and more than proud of the work we had done to reach our
+conclusion.
