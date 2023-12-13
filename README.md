@@ -20,6 +20,7 @@ GDP and the popularity of a certain genre of music in that country.
 
 ``` r
 library(ggplot2) # Used for data visualization
+install.packages("readxl", repos="https://cran.r-project.org")
 library(readxl) # Used for reading in Excel files
 library(dplyr) # Used for data manipulation
 
@@ -498,7 +499,7 @@ ggplot(danceability_and_gdp_by_country, aes(x = avg_gdp, y = avg_danceability, c
 ![](README_files/figure-gfm/unnamed-chunk-15-1.png)<!-- -->
 
 ``` r
-# No, we do the same thing as above, but instead of danceability, we use valence
+# Now, we do the same thing as above, but instead of danceability, we use valence
 valence_and_gdp_by_country <- cleaned_joined_data %>%
   filter(!is.na(country)) %>%
   group_by(country) %>%
@@ -514,3 +515,42 @@ ggplot(valence_and_gdp_by_country, aes(x = avg_gdp, y = avg_valence, color = cou
     ## Warning: Removed 2 rows containing missing values (`geom_point()`).
 
 ![](README_files/figure-gfm/unnamed-chunk-16-1.png)<!-- -->
+
+For more insight into the data, we can create the same scatterplot,
+except this time, color the points based on their quartile of GDP per
+capita.
+
+``` r
+danceability_and_gdp_by_country <- cleaned_joined_data %>%
+  filter(!is.na(country) & !is.na(`2021 GDP per capita`)) %>%
+  group_by(country) %>%
+  summarise(avg_danceability = mean(danceability, na.rm = TRUE), 
+            avg_gdp = mean(`2021 GDP per capita`, na.rm = TRUE))
+
+# Calculate quartiles for GDP per capita
+gdp_quartiles <- quantile(danceability_and_gdp_by_country$avg_gdp, probs = c(0.25, 0.5, 0.75), na.rm = TRUE)
+
+# Add a new column for GDP quartiles
+danceability_and_gdp_by_country$gdp_quartile <- cut(danceability_and_gdp_by_country$avg_gdp, 
+                                                    breaks = c(-Inf, gdp_quartiles, Inf), 
+                                                    labels = c("1st Quartile", "2nd Quartile", "3rd Quartile", "4th Quartile"),
+                                                    include.lowest = TRUE)
+
+# Scatterplot colored by GDP quartile
+ggplot(danceability_and_gdp_by_country, aes(x = avg_gdp, y = avg_danceability, color = gdp_quartile)) +
+  geom_point() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+  labs(x = "2021 GDP per capita", y = "Average Danceability", title = "Average Danceability by GDP per Capita Quartile")
+```
+
+![](README_files/figure-gfm/unnamed-chunk-17-1.png)<!-- -->
+
+``` r
+# Create box plots for each GDP quartile
+ggplot(danceability_and_gdp_by_country, aes(x = gdp_quartile, y = avg_danceability)) +
+  geom_boxplot() +
+  labs(x = "GDP per Capita Quartile", y = "Average Danceability", title = "Danceability by GDP per Capita Quartile") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+![](README_files/figure-gfm/unnamed-chunk-18-1.png)<!-- -->
